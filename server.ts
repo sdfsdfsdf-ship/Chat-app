@@ -12,8 +12,14 @@ declare module "net" {
 
 const SocketHandler = (req: NextApiRequest, res: NextApiResponse) => {
   // Only initialize once
-  if (!res.socket?.server.io) {
-    const io = new IOServer(res.socket.server as any, {
+  const socketServer = res.socket?.server;
+  if (!socketServer) {
+    // socket is null, just end response
+    return res.end();
+  }
+
+  if (!socketServer.io) {
+    const io = new IOServer(socketServer as any, {
       cors: {
         origin: process.env.NEXT_PUBLIC_APP_URL || "*",
         methods: ["GET", "POST"],
@@ -33,7 +39,7 @@ const SocketHandler = (req: NextApiRequest, res: NextApiResponse) => {
       });
     });
 
-    res.socket.server.io = io;
+    socketServer.io = io;
   }
 
   res.end();
