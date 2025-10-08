@@ -1,21 +1,17 @@
-import mongoose from "mongoose";
+import { MongoClient } from "mongodb";
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
+let cachedClient: MongoClient | null = null;
 
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
-}
+export async function connectDB(): Promise<MongoClient> {
+  if (cachedClient) return cachedClient;
 
-let cached = (global as any).mongoose || { conn: null, promise: null };
-
-export async function connectDB() {
-  if (cached.conn) return cached.conn;
-
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
-      dbName: "next_chat",
-    }).then((mongoose) => mongoose);
+  if (!process.env.MONGODB_URI) {
+    throw new Error("Missing MONGODB_URI environment variable");
   }
-  cached.conn = await cached.promise;
-  return cached.conn;
+
+  const client = new MongoClient(process.env.MONGODB_URI);
+  await client.connect();
+
+  cachedClient = client;
+  return client;
 }
