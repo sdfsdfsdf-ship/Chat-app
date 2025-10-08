@@ -13,7 +13,7 @@ declare module "net" {
 const SocketHandler = (req: NextApiRequest, res: NextApiResponse) => {
   // Only initialize once
   if (!res.socket?.server.io) {
-    const io = new IOServer(res.socket?.server as any, {
+    const io = new IOServer(res.socket.server as any, {
       cors: {
         origin: process.env.NEXT_PUBLIC_APP_URL || "*",
         methods: ["GET", "POST"],
@@ -33,7 +33,7 @@ const SocketHandler = (req: NextApiRequest, res: NextApiResponse) => {
       });
     });
 
-    if(res.socket) res.socket.server.io = io;
+    res.socket.server.io = io;
   }
 
   res.end();
