@@ -23,6 +23,7 @@ const SocketHandler = (req: NextApiRequest, res: NextApiResponse) => {
       cors: {
         origin: process.env.NEXT_PUBLIC_APP_URL || "*",
         methods: ["GET", "POST"],
+        credentials: true
       },
       path: "/api/socket/io",
     });

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: next-chat
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
